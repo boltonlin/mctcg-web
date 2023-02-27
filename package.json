@@ -24,5 +24,13 @@
   },
   "dependencies": {
     "yaml": "^2.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boltonlin/mctcg-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/boltonlin/mctcg-web/issues"
+  },
+  "homepage": "https://github.com/boltonlin/mctcg-web#readme"
 }
