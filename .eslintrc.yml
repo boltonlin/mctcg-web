@@ -1,0 +1,9 @@
+plugins:
+  - 'prettier'
+extends:
+  - 'airbnb-typescript'
+  - 'prettier'
+parserOptions:
+  ecmaVersion: 'latest'
+ignorePatterns:
+  - dist/
