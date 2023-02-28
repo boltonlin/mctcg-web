@@ -4,3 +4,12 @@ extends:
   - 'airbnb'
 parserOptions:
   project: './client/tsconfig.json'
+rules:
+  'react/jsx-filename-extension': 'off'
+  'import/extensions':
+    - 'error'
+    - 'ignorePackages'
+    - 'ts': 'never'
+      'tsx': 'never'
+settings:
+  'import/resolver': 'webpack'
