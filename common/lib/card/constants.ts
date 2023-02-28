@@ -62,3 +62,10 @@ export type CollectorSet =
   | 'Rogue'
   | 'Mojo Mania'
   | 'Ronan Modular Set';
+
+// TODO: add more
+export type IdentityName = 'Spider-Man' | 'Captain Marvel';
+
+export type VillainName = 'Rhino' | 'Klaw' | 'Ultron';
+
+export type EncounterSet = 'Standard' | 'Rhino' | 'Bomb Scare';

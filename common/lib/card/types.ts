@@ -6,16 +6,16 @@ import type {
   CollectorSet,
 } from './constants';
 
-type CollectorInfo = [CollectorSet, number];
+export type CollectorInfo = [CollectorSet, number];
 
 // ! CHANGE THIS
 type Script = (TBD: any) => void;
 
-export interface Ability {
+export type Ability = {
   scripts: [Script];
-}
+};
 
-export interface Card {
+export interface ICardInfo {
   ability: Ability | null;
   cinfo: CollectorInfo;
   ctype: CardType;
@@ -24,34 +24,39 @@ export interface Card {
   title: string;
 }
 
-export interface PlayerCard extends Card {
+export interface IPlayerCard extends ICardInfo {
   ctype: PlayerCardType;
   dtype: 'PLAYER';
 }
 
-export interface ScenarioCard extends Card {
+export interface IScenarioCard extends ICardInfo {
   ctype: ScenarioCardType;
   dtype: 'SCENARIO';
 }
 
-export interface CharacterCard extends Card {
+export interface ICharacterCardInfo extends ICardInfo {
   ATK: number;
-  active: boolean;
   ctype: 'ALLY' | 'IDENTITY_ALTER' | 'IDENTITY_HERO' | 'MINION' | 'VILLAIN';
   hitPoints: number;
   traits: Set<string>;
 }
 
 /**
+ * Represents state of a card
+ * @prop {boolean} active False if exhausted, True if not
+ */
+export interface ICharacterCardState {
+  active: boolean;
+}
+
+/**
  * Characters can use exhaust themselves to use a basic power, at minimum they
  * have an ATK stat, but they may have SCH and THW.
  * @prop {number} ATK Attack stat
- * @prop {boolean} active False if exhausted, True if not
  */
-export abstract class Character implements CharacterCard {
+export abstract class Character implements ICharacterCardInfo {
   ATK: number;
   ability: Ability | null;
-  active: boolean;
   cinfo: CollectorInfo;
   ctype: 'ALLY' | 'IDENTITY_ALTER' | 'IDENTITY_HERO' | 'MINION' | 'VILLAIN';
   dtype: DeckType;
@@ -60,10 +65,9 @@ export abstract class Character implements CharacterCard {
   title: string;
   traits: Set<string>;
 
-  constructor(sheet: CharacterCard) {
+  constructor(sheet: ICharacterCardInfo) {
     this.ATK = sheet.ATK;
     this.ability = sheet.ability;
-    this.active = false;
     this.cinfo = sheet.cinfo;
     this.ctype = sheet.ctype;
     this.dtype = sheet.dtype;
