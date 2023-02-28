@@ -1,8 +1,16 @@
 {
-  "extends": "@tsconfig/create-react-app/tsconfig.json",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "react",
+    "noEmit": true,
+    "strict": true,
     "noImplicitAny": true,
-    "noEmit": false
-  },
-  "files": ["src/index.tsx"]
+    "strictNullChecks": true,
+    "isolatedModules": true,
+    "moduleResolution": "nodenext",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
+  }
 }
