@@ -1,2 +1,2 @@
-export * as types from './types';
-export * as constants from './constants';
+export * as types from './lib/types';
+export * as constants from './lib/constants';

@@ -25,6 +25,7 @@ rules:
           - 'constructor'
           - 'get'
           - 'set'
+          - 'abstract-method'
           - 'method'
         order: 'natural'
   'lines-between-class-members': 'off'

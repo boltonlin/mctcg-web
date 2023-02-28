@@ -1,6 +1,6 @@
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
+import path = require('path');
+import express = require('express');
+import morgan = require('morgan');
 
 const app = express();
 
