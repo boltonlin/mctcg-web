@@ -4,7 +4,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react",
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
