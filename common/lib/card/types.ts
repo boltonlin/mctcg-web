@@ -1,46 +1,90 @@
 import { Owner, Zone } from '../game/constants';
 import type {
-  CardType,
-  DeckType,
-  PlayerCardType,
-  ScenarioCardType,
-  CollectorSet,
   CardState,
+  ResourceType,
+  Classification,
+  ProductSet,
+  DeckSet,
+  CardType,
 } from './constants';
 
-// ! CHANGE THIS
-type Script = (TBD: any) => void;
-type Location = [Zone, Owner?];
-
-export type Ability = { scripts: [Script] };
-export type CollectorInfo = [CollectorSet, number];
+export type Location = [Zone, Owner?];
+export type Traits = Set<string>;
+export type ResourceMap = Map<ResourceType, number>;
+export type Abilities = [number];
+export type CollectorInfo = [ProductSet, number];
 
 export interface ICardInfo {
-  ability: Ability | null;
-  cinfo: CollectorInfo;
+  accelerationFactor?: number;
+  attack?: number;
+  attackConsequential?: number;
+  boostIcons?: number;
+  class: Classification;
   code: string;
+  cost?: number;
   ctype: CardType;
-  dtype: DeckType;
-  flavor: string | null;
+  deckSet: DeckSet;
+  deckSetNumber?: number;
+  defense?: number;
+  handSize?: number;
+  hitPoints?: number;
+  linkedCard?: string;
+  productSet: ProductSet;
+  productSetNumber: number;
+  recovery?: number;
+  resourceEnergy?: number;
+  resourceMental?: number;
+  resourcePhysical?: number;
+  resourceWild?: number;
+  scheme?: number;
+  stageNumber?: number;
+  startingThreat?: number;
+  subtitle?: string;
+  targetThreat?: number;
+  text: string;
+  thwart?: number;
+  thwartConsequential?: number;
   title: string;
+  traits?: string;
+  unique?: boolean;
 }
 
-export interface IPlayerCardInfo extends ICardInfo {
-  ctype: PlayerCardType;
-  dtype: 'PLAYER';
+export interface ICardMeta {
+  imagesrc: string;
+  url: string;
 }
 
-export interface IScenarioCardInfo extends ICardInfo {
-  ctype: ScenarioCardType;
-  dtype: 'SCENARIO';
-}
+// export interface IPlayerCardInfo extends ICardInfo {
+//   cost?: number;
+//   ctype: PlayerCardType;
+//   dtype: 'PLAYER';
+//   resourceEnergy?: number;
+//   resourceMental?: number;
+//   resourcePhysical?: number;
+//   resourceWild?: number;
+//   traits?: string;
+//   unique?: boolean;
+// }
 
-export interface ICharacterCardInfo extends ICardInfo {
-  ATK: number;
-  ctype: 'Ally' | 'Alter-Ego' | 'Hero' | 'Minion' | 'Villain';
-  hitPoints: number;
-  traits: Set<string>;
-}
+// export interface IAllyCardInfo extends IPlayerCardInfo {
+//   attack: number;
+//   attackConsequential: number;
+//   cost: number;
+//   ctype: 'Ally';
+//   hitPoints: number;
+//   thwart: number;
+//   thwartConsequential: number;
+// }
+
+// export interface IEventCardInfo extends IPlayerCardInfo {
+//   cost: number;
+//   ctype: 'Event';
+// }
+
+// export interface IScenarioCardInfo extends ICardInfo {
+//   ctype: ScenarioCardType;
+//   dtype: 'SCENARIO';
+// }
 
 export abstract class Card {
   currentInfo: ICardInfo;
