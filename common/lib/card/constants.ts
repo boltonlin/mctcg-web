@@ -71,3 +71,10 @@ export type CardState =
   | 'IN_DISCARD'
   | 'IN_DECK'
   | 'REMOVED';
+
+export type CardStateTransition =
+  | 'ADD_TO_HAND' // ANY -> IN_HAND
+  | 'DISCARD' // ANY -> IN_DISCARD
+  | 'PLAY' // ANY -> IN_PLAY
+  | 'RETURN' // ANY -> IN_DECK
+  | 'REMOVE'; // ANY -> REMOVED

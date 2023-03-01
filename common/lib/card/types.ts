@@ -54,40 +54,9 @@ export interface ICardMeta {
   url: string;
 }
 
-// export interface IPlayerCardInfo extends ICardInfo {
-//   cost?: number;
-//   ctype: PlayerCardType;
-//   dtype: 'PLAYER';
-//   resourceEnergy?: number;
-//   resourceMental?: number;
-//   resourcePhysical?: number;
-//   resourceWild?: number;
-//   traits?: string;
-//   unique?: boolean;
-// }
-
-// export interface IAllyCardInfo extends IPlayerCardInfo {
-//   attack: number;
-//   attackConsequential: number;
-//   cost: number;
-//   ctype: 'Ally';
-//   hitPoints: number;
-//   thwart: number;
-//   thwartConsequential: number;
-// }
-
-// export interface IEventCardInfo extends IPlayerCardInfo {
-//   cost: number;
-//   ctype: 'Event';
-// }
-
-// export interface IScenarioCardInfo extends ICardInfo {
-//   ctype: ScenarioCardType;
-//   dtype: 'SCENARIO';
-// }
-
 export abstract class Card {
   currentInfo: ICardInfo;
+  readonly linkedInfo?: ICardInfo;
   location: Location;
   readonly originalInfo: ICardInfo;
   owner: Owner;
@@ -97,12 +66,14 @@ export abstract class Card {
     info: ICardInfo,
     location: Location,
     owner: Owner,
-    state: CardState
+    state: CardState,
+    linkedInfo?: ICardInfo
   ) {
     this.currentInfo = info;
     this.originalInfo = info;
     this.location = location;
     this.owner = owner;
     this.state = state;
+    if (linkedInfo) this.linkedInfo = linkedInfo;
   }
 }
