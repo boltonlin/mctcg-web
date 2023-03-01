@@ -4,5 +4,5 @@
     "outDir": "dist",
     "rootDir": "../"
   },
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", "config"]
 }

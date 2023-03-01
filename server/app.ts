@@ -10,4 +10,5 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../../client/dist')));
 
 app.listen(3000);
+// eslint-disable-next-line
 console.log('Server listening at port 3000');
