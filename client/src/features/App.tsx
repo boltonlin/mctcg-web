@@ -4,14 +4,14 @@ import { Phase } from '../../../common';
 import { Stage } from '@inlet/react-pixi';
 
 export default function App() {
-  const [phase, setPhase] = useState<Phase>('setup');
+  const [phase, setPhase] = useState<Phase>('SETUP_PHASE');
   const renderPhase = (): ReactElement => {
     switch (phase) {
-      case 'setup':
+      case 'SETUP_PHASE':
         return <Setup />;
-      case 'player':
+      case 'PLAYER_PHASE':
         return <div>Player Phase</div>;
-      case 'villain':
+      case 'VILLAIN_PHASE':
         return <div>Villain Phase</div>;
     }
   };
