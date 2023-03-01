@@ -7,14 +7,16 @@ const cardSchema = new mongoose.Schema({
   class: String,
   productSet: String,
   productSetNumber: Number,
-  deckSet: String,
+  cardSet: String,
   title: String,
   ctype: String,
   text: String,
   url: String,
   imagesrc: String,
   // below are optional
-  deckSetNumber: Number,
+  cardSetNumber: Number,
+  cardSetQty: Number,
+  cardSetType: String,
   linkedCard: String,
   traits: String, // TODO: transform to array, problem 'S.H.I.E.L.D.'
   cost: Number,

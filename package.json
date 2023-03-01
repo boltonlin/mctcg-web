@@ -22,9 +22,6 @@
     "prettier": "2.8.4",
     "typescript": "^4.9.5"
   },
-  "dependencies": {
-    "yaml": "^2.2.1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/boltonlin/mctcg-web.git"
