@@ -69,3 +69,10 @@ export type IdentityName = 'Spider-Man' | 'Captain Marvel';
 export type VillainName = 'Rhino' | 'Klaw' | 'Ultron';
 
 export type EncounterSet = 'Standard' | 'Rhino' | 'Bomb Scare';
+
+export type CardState =
+  | 'IN_PLAY'
+  | 'IN_HAND'
+  | 'IN_DISCARD'
+  | 'IN_DECK'
+  | 'REMOVED';

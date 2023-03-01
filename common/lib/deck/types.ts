@@ -13,8 +13,10 @@ type DeckAspect =
   | 'Protection'
   | 'Adam';
 
+export type Decklist = Map<CollectorInfo, number>;
+
 export interface IDeckInfo {
-  decklist: Map<CollectorInfo, number>;
+  decklist: Decklist;
   dtype: DeckType;
   id: number;
   name: string;
@@ -36,7 +38,19 @@ export interface IVillainDeckInfo extends IDeckInfo {
   villain: VillainName;
 }
 
-export interface MainSchemeDeckInfo extends IDeckInfo {
+export interface IMainSchemeDeckInfo extends IDeckInfo {
   dtype: 'SCENARIO';
   villain: VillainName;
 }
+
+// export class PlayerDeck {
+//   deck: Card[];
+//   info: IPlayerDeckInfo;
+
+//   constructor(deckInfo: IPlayerDeckInfo) {
+//     this.deck = deckInfo.decklist.forEach((amount: number, cinfo: CollectorInfo): void => {
+
+//     });
+//     this.info =
+//   }
+// }

@@ -1,19 +1,19 @@
+import { Owner, Zone } from '../game/constants';
 import type {
   CardType,
   DeckType,
   PlayerCardType,
   ScenarioCardType,
   CollectorSet,
+  CardState,
 } from './constants';
-
-export type CollectorInfo = [CollectorSet, number];
 
 // ! CHANGE THIS
 type Script = (TBD: any) => void;
+type Location = [Zone, Owner?];
 
-export type Ability = {
-  scripts: [Script];
-};
+export type Ability = { scripts: [Script] };
+export type CollectorInfo = [CollectorSet, number];
 
 export interface ICardInfo {
   ability: Ability | null;
@@ -24,12 +24,12 @@ export interface ICardInfo {
   title: string;
 }
 
-export interface IPlayerCard extends ICardInfo {
+export interface IPlayerCardInfo extends ICardInfo {
   ctype: PlayerCardType;
   dtype: 'PLAYER';
 }
 
-export interface IScenarioCard extends ICardInfo {
+export interface IScenarioCardInfo extends ICardInfo {
   ctype: ScenarioCardType;
   dtype: 'SCENARIO';
 }
@@ -41,44 +41,23 @@ export interface ICharacterCardInfo extends ICardInfo {
   traits: Set<string>;
 }
 
-/**
- * Represents state of a card
- * @prop {boolean} active False if exhausted, True if not
- */
-export interface ICharacterCardState {
-  active: boolean;
-}
+export abstract class Card {
+  currentInfo: ICardInfo;
+  location: Location;
+  readonly originalInfo: ICardInfo;
+  owner: Owner;
+  state: CardState;
 
-/**
- * Characters can use exhaust themselves to use a basic power, at minimum they
- * have an ATK stat, but they may have SCH and THW.
- * @prop {number} ATK Attack stat
- */
-export abstract class Character implements ICharacterCardInfo {
-  ATK: number;
-  ability: Ability | null;
-  cinfo: CollectorInfo;
-  ctype: 'ALLY' | 'IDENTITY_ALTER' | 'IDENTITY_HERO' | 'MINION' | 'VILLAIN';
-  dtype: DeckType;
-  flavor: string | null;
-  hitPoints: number;
-  title: string;
-  traits: Set<string>;
-
-  constructor(sheet: ICharacterCardInfo) {
-    this.ATK = sheet.ATK;
-    this.ability = sheet.ability;
-    this.cinfo = sheet.cinfo;
-    this.ctype = sheet.ctype;
-    this.dtype = sheet.dtype;
-    this.flavor = sheet.flavor;
-    this.hitPoints = sheet.hitPoints;
-    this.title = sheet.title;
-    this.traits = sheet.traits;
+  constructor(
+    info: ICardInfo,
+    location: Location,
+    owner: Owner,
+    state: CardState
+  ) {
+    this.currentInfo = info;
+    this.originalInfo = info;
+    this.location = location;
+    this.owner = owner;
+    this.state = state;
   }
-
-  abstract receiveAttack(incomingAttack: number): void;
-  abstract receiveDamage(damage: number): void;
-  abstract triggerDefeat(): void;
-  abstract useBasicAttack(target: Character): void;
 }
