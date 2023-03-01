@@ -1,21 +1,21 @@
 export type PlayerCardType =
-  | 'ALLY'
-  | 'EVENT'
-  | 'IDENTITY_ALTER'
-  | 'IDENTITY_HERO'
-  | 'RESOURCE'
-  | 'SUPPORT'
-  | 'UPGRADE';
+  | 'Ally'
+  | 'Event'
+  | 'Alter-Ego'
+  | 'Hero'
+  | 'Resource'
+  | 'Support'
+  | 'Upgrade';
 
 export type ScenarioCardType =
-  | 'ATTACHMENT'
-  | 'ENVIRONMENT'
-  | 'MINION'
-  | 'OBLIGATION'
-  | 'SCHEME_MAIN'
-  | 'SCHEME_SIDE'
-  | 'TREACHERY'
-  | 'VILLAIN';
+  | 'Attachment'
+  | 'Environment'
+  | 'Minion'
+  | 'Obligation'
+  | 'Main Scheme'
+  | 'Side Scheme'
+  | 'Treachery'
+  | 'Villain';
 
 export type CardType = PlayerCardType | ScenarioCardType;
 

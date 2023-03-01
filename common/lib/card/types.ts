@@ -18,6 +18,7 @@ export type CollectorInfo = [CollectorSet, number];
 export interface ICardInfo {
   ability: Ability | null;
   cinfo: CollectorInfo;
+  code: string;
   ctype: CardType;
   dtype: DeckType;
   flavor: string | null;
@@ -36,7 +37,7 @@ export interface IScenarioCardInfo extends ICardInfo {
 
 export interface ICharacterCardInfo extends ICardInfo {
   ATK: number;
-  ctype: 'ALLY' | 'IDENTITY_ALTER' | 'IDENTITY_HERO' | 'MINION' | 'VILLAIN';
+  ctype: 'Ally' | 'Alter-Ego' | 'Hero' | 'Minion' | 'Villain';
   hitPoints: number;
   traits: Set<string>;
 }
