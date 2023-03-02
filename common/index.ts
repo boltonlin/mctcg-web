@@ -8,6 +8,7 @@ export { default as Card } from './card/Card';
 export { default as Deck } from './deck/Deck';
 export { default as Pile } from './pile/Pile';
 export { default as PlayerAvatar } from './game/PlayerAvatar';
+export { default as VillainAvatar } from './game/VillainAvatar';
 
 export type DeckId = number;
 export type Difficulty = 'Normal' | 'Expert';

@@ -12,6 +12,7 @@ export type GameSetupConfig = {
   firstPlayer: PlayerTitle;
   heroSets: HeroSet[];
   modularSets: ModularSet[];
+  numPlayers: number;
   villainSet: VillainSet;
 };
 

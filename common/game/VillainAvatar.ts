@@ -1,4 +1,5 @@
-import { Owner } from './constants';
+import type { VillainName } from '../index';
+import type { Owner } from './constants';
 
 export default class VillainAvatar {
   currentHitPoints: number;
@@ -6,10 +7,10 @@ export default class VillainAvatar {
   designation: Owner = 'VILLAIN';
   finalStage: number;
   maxHitPoints: number;
-  name: string;
+  name: VillainName;
 
   constructor(
-    name: string,
+    name: VillainName,
     hitPoints: number,
     currentStage: number,
     finalStage: number

@@ -39,7 +39,9 @@ export default class Pile {
     let str = '[\n';
     for (let i = 0; i < this.cards.length; i += 1) {
       str += '  "';
-      str += this.cards[i]?.originalInfo?.title ?? '';
+      str += `${this.cards[i]?.originalInfo?.title}` ?? '';
+      if (this.cards[i]?.originalInfo?.stageNumber)
+        str += ` ${this.cards[i]?.originalInfo?.stageNumber}` ?? '';
       str += '"\n';
     }
     str += ']\n';

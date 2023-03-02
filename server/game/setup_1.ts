@@ -11,7 +11,15 @@
 
 import '../db';
 import tryCatch from '../utils/tryCatch';
-import { Card, Deck, Pile, PlayerAvatar } from '../../common';
+import {
+  Card,
+  Deck,
+  Difficulty,
+  Pile,
+  PlayerAvatar,
+  VillainAvatar,
+  VillainName,
+} from '../../common';
 import type {
   CardList,
   CardState,
@@ -40,6 +48,7 @@ const gameSetupConfig: GameSetupConfig = {
   firstPlayer: 'PLAYER1',
   heroSets: ['Spider-Man'],
   modularSets: ['Standard', 'Bomb Scare'],
+  numPlayers: 1,
   villainSet: 'Rhino',
 };
 
@@ -187,12 +196,7 @@ const createMainSchemePile = async (villainSet: VillainSet) => {
   );
 };
 
-// create pile (heroes like Ant-Man and Wasp have 3 forms)
-// create player avatar
-const initializeIdentity = async (
-  heroList: CardList,
-  playerForm: PlayerForm
-) => {
+const initializePlayer = async (heroList: CardList, playerForm: PlayerForm) => {
   const identityPile = (await createPile(
     heroList,
     playerForm.designation,
@@ -211,19 +215,40 @@ const initializeIdentity = async (
   return { identityPile, playerAvatar };
 };
 
-const initializeVillain = () => {};
+const initializeVillain = async (
+  difficulty: Difficulty,
+  villainName: VillainName,
+  numPlayers: number
+) => {
+  const stageFilter = difficulty === 'Normal' ? { $lte: 2 } : { $gte: 2 };
+  const villainPile = await createPile(
+    await createCardList(
+      (await CardModel.find(
+        {
+          ctype: 'Villain',
+          cardSet: villainName,
+          stageNumber: stageFilter,
+        },
+        'cardSetQty'
+      )) as Tuples
+    ),
+    'VILLAIN',
+    'Villain',
+    'VillainZone',
+    'IN_PILE'
+  );
+  const villainAvatar = new VillainAvatar(
+    villainName,
+    (villainPile?.cards[0]?.originalInfo?.hitPoints as number) * numPlayers,
+    difficulty === 'Normal' ? 1 : 2,
+    difficulty === 'Normal' ? 2 : 3
+  );
+  return { villainPile, villainAvatar };
+};
 
 async function main() {
-  const [
-    {
-      heroList,
-      heroCardList,
-      nonHeroList,
-      // obligations,
-      nemesisList,
-    },
-    _err,
-  ] = await tryCatch(fetchPlayerDeckList, playerForm.deckId);
+  const [{ heroList, heroCardList, nonHeroList, nemesisList }, _err] =
+    await tryCatch(fetchPlayerDeckList, playerForm.deckId);
   const heroDeck = await createDeck(
     heroCardList,
     playerForm.designation,
@@ -250,16 +275,23 @@ async function main() {
   );
   const nemesisPile = await createNemesisPile(nemesisList);
   const mainSchemePile = await createMainSchemePile(gameSetupConfig.villainSet);
-  const { identityPile, playerAvatar } = await initializeIdentity(
+  const { identityPile, playerAvatar } = await initializePlayer(
     heroList,
     playerForm
+  );
+  const { villainPile, villainAvatar } = await initializeVillain(
+    gameSetupConfig.difficulty,
+    gameSetupConfig.villainSet,
+    gameSetupConfig.numPlayers
   );
   console.log(playerDeck.prettyPrint());
   console.log(encounterDeck.prettyPrint());
   console.log(nemesisPile.prettyPrint());
   console.log(mainSchemePile.prettyPrint());
-  console.log(identityPile.prettyPrint());
   console.log(playerAvatar);
+  console.log(identityPile.prettyPrint());
+  console.log(villainAvatar);
+  console.log(villainPile.prettyPrint());
 }
 
 main();
