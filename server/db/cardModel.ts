@@ -1,7 +1,8 @@
 /* eslint-disable import/no-relative-packages */
 import mongoose from 'mongoose';
+import type { ICardInfo } from '../../common';
 
-const cardSchema = new mongoose.Schema({
+const cardSchema = new mongoose.Schema<ICardInfo>({
   _id: String,
   code: String,
   class: String,
@@ -35,7 +36,7 @@ const cardSchema = new mongoose.Schema({
   boostIcons: Number, // star icons are NOT considered boost icons, and will be in abilities and text fields
   handSize: Number,
   startingThreat: Number,
-  acclerationFactor: Number,
+  accelerationFactor: Number,
   targetThreat: Number,
   stageNumber: Number,
   unique: Boolean,
@@ -44,6 +45,10 @@ const cardSchema = new mongoose.Schema({
     type: [Number],
     default: undefined,
   },
+  backFlavor: String,
+  backImageSrc: String,
+  backText: String,
+  flavorText: String,
 });
 
 const CardModel = mongoose.model('Card', cardSchema);

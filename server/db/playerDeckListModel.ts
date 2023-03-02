@@ -12,7 +12,7 @@ const playerDeckListSchema = new mongoose.Schema({
     type: Map,
     of: Number,
   },
-  deckList: {
+  nonHeroList: {
     type: Map,
     of: Number,
   },

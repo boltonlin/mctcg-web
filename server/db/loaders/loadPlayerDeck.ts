@@ -44,14 +44,14 @@ async function main() {
     .filter((result: any) => result.ctype.match(/obligation/i)?.length)
     .reduce(intoMap, {});
   const nemesisList = nemesisListResults.reduce(intoMap, {});
-  const { deckList } = deck;
+  const { nonHeroList } = deck;
   const insert = {
     name: deck.name,
     hero: heroResults.title,
     heroCode: heroResults._id,
     heroList,
     heroCardList,
-    deckList,
+    nonHeroList,
     obligations,
     nemesisList,
   };
