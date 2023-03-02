@@ -1,6 +1,6 @@
 import type { Owner } from './constants';
 
-export default class Player {
+export default class PlayerAvatar {
   designation: Owner;
   hitPoints: number;
   name: string;

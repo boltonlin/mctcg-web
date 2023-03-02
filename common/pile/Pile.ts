@@ -25,7 +25,8 @@ export default class Pile {
   }
 
   prettyPrint(): string {
-    const str = `Size: ${this.size}\n`;
+    let str = `Size: ${this.size}\n`;
+    str += `Owner: ${this.owner}\n`;
     return str + this.prettyPrintCards();
   }
 

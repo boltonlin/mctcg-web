@@ -1,9 +1,7 @@
-import { Phase } from './constants';
+import type { Owner, Phase } from './constants';
 
-export type PlayerId = number;
-
-export type PlayerInfo = {
-  id: PlayerId;
+export type PlayerForm = {
+  designation: Owner;
   name: string;
 };
 
