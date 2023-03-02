@@ -1,13 +1,17 @@
 import type Card from '../card/Card';
 import type { Owner } from '../game/constants';
+import type { DeckType } from '../index';
+import type { PileType } from './types';
 
 export default class Pile {
   cards: Card[];
   owner: Owner;
   size: number;
+  type: PileType | DeckType;
 
-  constructor(cards: Card[], owner: Owner) {
+  constructor(cards: Card[], owner: Owner, type: PileType | DeckType) {
     this.cards = cards;
+    this.type = type;
     this.size = cards.length;
     this.owner = owner;
   }
@@ -25,7 +29,8 @@ export default class Pile {
   }
 
   prettyPrint(): string {
-    let str = `Size: ${this.size}\n`;
+    let str = `Name: ${this.type} ${this.constructor.name}\n`;
+    str += `Size: ${this.size}\n`;
     str += `Owner: ${this.owner}\n`;
     return str + this.prettyPrintCards();
   }

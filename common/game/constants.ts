@@ -19,4 +19,6 @@ export type Zone =
   | 'Removed'
   | 'NemesisPile';
 
-export type Owner = 'VILLAIN' | 'PLAYER1' | 'PLAYER2' | 'PLAYER3' | 'PLAYER4';
+export type PlayerTitle = 'PLAYER1' | 'PLAYER2' | 'PLAYER3' | 'PLAYER4';
+
+export type Owner = 'VILLAIN' | PlayerTitle;

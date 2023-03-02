@@ -11,29 +11,37 @@
 
 import '../db';
 import tryCatch from '../utils/tryCatch';
-import { Card, Deck, PlayerAvatar } from '../../common';
+import { Card, Deck, Pile, PlayerAvatar } from '../../common';
 import type {
-  CardState,
   CardList,
+  CardState,
   DeckType,
+  GameSetupConfig,
+  HeroSet,
   ICardInfo,
   ModularSet,
   Owner,
+  PileType,
   PlayerForm,
-  VillainName,
   VillainSet,
   Zone,
 } from '../../common';
 import PlayerDeckListModel from '../db/playerDeckListModel';
 import CardModel from '../db/cardModel';
-import Pile from '../../common/pile/Pile';
 
 // ! placeholders
 const playerForm: PlayerForm = {
-  name: 'PROXYPLAYER',
+  deckId: '63ffec30ba725eaeca9b5b97',
   designation: 'PLAYER1',
+  name: 'PROXYPLAYER',
 };
-const villainName: VillainName = 'Rhino';
+const gameSetupConfig: GameSetupConfig = {
+  difficulty: 'Normal',
+  firstPlayer: 'PLAYER1',
+  heroSets: ['Spider-Man'],
+  modularSets: ['Standard', 'Bomb Scare'],
+  villainSet: 'Rhino',
+};
 
 type Tuples = { _id: string; cardSetQty: number }[];
 
@@ -72,10 +80,11 @@ const createDeck = async (
 const createPile = async (
   cardList: CardList,
   owner: Owner,
+  name: PileType,
   zone: Zone,
   state: CardState
 ) => {
-  let pile: Pile = new Pile([], owner);
+  let pile: Pile = new Pile([], owner, name);
   for await (const [code, qty] of cardList.entries()) {
     let cardInfo: ICardInfo;
     cardInfo = (await CardModel.findById(code, {
@@ -96,17 +105,21 @@ const createCardList = (tuples: Tuples) => {
 };
 
 const combineDecks = (deckA: Deck, deckB: Deck, owner: Owner): Deck => {
-  if (deckA.dtype !== deckB.dtype)
-    throw new Error('Decks are not the same type');
-  return new Deck(deckA.cards.concat(deckB.cards), deckA.dtype, owner);
+  if (deckA.type !== deckB.type) throw new Error('Decks are not the same type');
+  return new Deck(
+    deckA.cards.concat(deckB.cards),
+    deckA.type as DeckType,
+    owner
+  );
 };
 
 const createPlayerDeck = (heroDeck: Deck, nonHeroDeck: Deck, owner: Owner) =>
   combineDecks(heroDeck, nonHeroDeck, owner);
 
-const createBaseEncounterDeck = async (
+const createEncounterDeck = async (
   villainSet: VillainSet,
-  modSetNames: ModularSet[]
+  modSetNames: ModularSet[],
+  heroSets: HeroSet[]
 ) => {
   let res = (await CardModel.find(
     { cardSet: villainSet, ctype: { $not: /villain|main scheme/i } },
@@ -120,9 +133,26 @@ const createBaseEncounterDeck = async (
     'Encounter',
     'IN_DECK'
   );
-  let sets = [];
   for await (const set of modSetNames) {
     res = await CardModel.find({ cardSet: set }, 'cardSetQty');
+    cardList = createCardList(res);
+    encounterDeck = combineDecks(
+      encounterDeck,
+      await createDeck(
+        cardList,
+        'VILLAIN',
+        'EncounterDeck',
+        'Encounter',
+        'IN_DECK'
+      ),
+      'VILLAIN'
+    );
+  }
+  for await (const set of heroSets) {
+    res = await CardModel.find(
+      { cardSet: set, ctype: 'Obligation' },
+      'cardSetQty'
+    );
     cardList = createCardList(res);
     encounterDeck = combineDecks(
       encounterDeck,
@@ -140,7 +170,7 @@ const createBaseEncounterDeck = async (
 };
 
 const createNemesisPile = (nemesisList: CardList) =>
-  createPile(nemesisList, 'VILLAIN', 'NemesisPile', 'REMOVED');
+  createPile(nemesisList, 'VILLAIN', 'Nemesis', 'NemesisPile', 'REMOVED');
 
 const createMainSchemePile = async (villainSet: VillainSet) => {
   let res = (await CardModel.find(
@@ -151,6 +181,7 @@ const createMainSchemePile = async (villainSet: VillainSet) => {
   return createPile(
     mainSchemeList,
     'VILLAIN',
+    'Main Scheme',
     'MainSchemeZone_Hidden',
     'IN_PILE'
   );
@@ -165,6 +196,7 @@ const initializeIdentity = async (
   const identityPile = (await createPile(
     heroList,
     playerForm.designation,
+    'Identity',
     'IdentityZone',
     'IN_PILE'
   )) as Pile;
@@ -172,13 +204,14 @@ const initializeIdentity = async (
   const playerAvatar = new PlayerAvatar(
     playerForm.name,
     playerForm.designation,
-    identityPile?.cards[0]?.originalInfo?.hitPoints as number
+    identityPile?.cards[0]?.originalInfo?.hitPoints as number,
+    gameSetupConfig.firstPlayer === playerForm.designation ? true : false
   );
 
   return { identityPile, playerAvatar };
 };
 
-// const initializeVillain = () => {};
+const initializeVillain = () => {};
 
 async function main() {
   const [
@@ -190,7 +223,7 @@ async function main() {
       nemesisList,
     },
     _err,
-  ] = await tryCatch(fetchPlayerDeckList, '63ffec30ba725eaeca9b5b97');
+  ] = await tryCatch(fetchPlayerDeckList, playerForm.deckId);
   const heroDeck = await createDeck(
     heroCardList,
     playerForm.designation,
@@ -210,12 +243,13 @@ async function main() {
     nonHeroDeck,
     playerForm.designation
   );
-  const encounterDeck = await createBaseEncounterDeck(villainName, [
-    'Standard',
-    'Bomb Scare',
-  ]);
+  const encounterDeck = await createEncounterDeck(
+    gameSetupConfig.villainSet,
+    gameSetupConfig.modularSets,
+    gameSetupConfig.heroSets
+  );
   const nemesisPile = await createNemesisPile(nemesisList);
-  const mainSchemePile = await createMainSchemePile(villainName);
+  const mainSchemePile = await createMainSchemePile(gameSetupConfig.villainSet);
   const { identityPile, playerAvatar } = await initializeIdentity(
     heroList,
     playerForm
