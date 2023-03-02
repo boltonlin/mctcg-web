@@ -1,5 +1,5 @@
 import type Card from '../card/Card';
-import type { Owner } from '../game/constants';
+import type { Owner, Zone } from '../game/constants';
 import type { DeckType } from '../index';
 import type { PileType } from './types';
 
@@ -8,12 +8,19 @@ export default class Pile {
   owner: Owner;
   size: number;
   type: PileType | DeckType;
+  zone: Zone;
 
-  constructor(cards: Card[], owner: Owner, type: PileType | DeckType) {
+  constructor(
+    cards: Card[],
+    owner: Owner,
+    type: PileType | DeckType,
+    zone: Zone
+  ) {
     this.cards = cards;
     this.type = type;
     this.size = cards.length;
     this.owner = owner;
+    this.zone = zone;
   }
 
   add(card: Card, qty?: number): void {

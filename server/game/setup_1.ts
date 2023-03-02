@@ -93,7 +93,7 @@ const createPile = async (
   zone: Zone,
   state: CardState
 ) => {
-  let pile: Pile = new Pile([], owner, name);
+  let pile: Pile = new Pile([], owner, name, zone);
   for await (const [code, qty] of cardList.entries()) {
     let cardInfo: ICardInfo;
     cardInfo = (await CardModel.findById(code, {
