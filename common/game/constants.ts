@@ -5,15 +5,18 @@ export type Zone =
   | 'EncounterDeck'
   | 'VillainZone'
   | 'AttachmentZone'
-  | 'MainSchemeZone'
+  | 'MainSchemeZone_InPlay'
+  | 'MainSchemeZone_Hidden'
   | 'SideSchemeZone'
-  | 'MinionZone' // this is in the player area
+  // below are in player specific areas
+  | 'MinionZone'
   | 'IdentityZone'
   | 'AllyZone'
   | 'UpgradeZone'
   | 'SupportZone'
   | 'PlayerDiscardPile'
   | 'PlayerDeck'
-  | 'Removed';
+  | 'Removed'
+  | 'NemesisPile';
 
 export type Owner = 'VILLAIN' | 'PLAYER1' | 'PLAYER2' | 'PLAYER3' | 'PLAYER4';

@@ -1,7 +1,10 @@
-export * from './lib/card/types';
-export * from './lib/card/constants';
-export * from './lib/deck/types';
-export * from './lib/game/constants';
+export * from './card/types';
+export * from './card/constants';
+export * from './deck/types';
+export * from './game/constants';
+
+export { default as Card } from './card/Card';
+export { default as Deck } from './deck/Deck';
 
 export type DeckId = number;
 export type Difficulty = 'normal';

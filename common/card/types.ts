@@ -1,33 +1,39 @@
-import { Owner, Zone } from '../game/constants';
 import type {
-  CardState,
   ResourceType,
   Classification,
   ProductSet,
-  DeckSet,
   CardType,
+  CardSet,
 } from './constants';
 
-export type Location = [Zone, Owner?];
 export type Traits = Set<string>;
 export type ResourceMap = Map<ResourceType, number>;
 export type Abilities = [number];
-export type CollectorInfo = [ProductSet, number];
+export type CardCode = string;
 
 export interface ICardInfo {
+  _id?: string;
+  abilities?: number[];
   accelerationFactor?: number;
   attack?: number;
   attackConsequential?: number;
+  backFlavor?: string;
+  backImageSrc?: string;
+  backText?: string;
   boostIcons?: number;
+  cardSet: CardSet;
+  cardSetNumber?: number;
+  cardSetQty?: number;
+  cardSetType?: string;
   class: Classification;
-  code: string;
+  code: CardCode;
   cost?: number;
   ctype: CardType;
-  deckSet: DeckSet;
-  deckSetNumber?: number;
   defense?: number;
+  flavorText?: string;
   handSize?: number;
   hitPoints?: number;
+  imagesrc: string;
   linkedCard?: string;
   productSet: ProductSet;
   productSetNumber: number;
@@ -47,33 +53,5 @@ export interface ICardInfo {
   title: string;
   traits?: string;
   unique?: boolean;
-}
-
-export interface ICardMeta {
-  imagesrc: string;
   url: string;
-}
-
-export abstract class Card {
-  currentInfo: ICardInfo;
-  readonly linkedInfo?: ICardInfo;
-  location: Location;
-  readonly originalInfo: ICardInfo;
-  owner: Owner;
-  state: CardState;
-
-  constructor(
-    info: ICardInfo,
-    location: Location,
-    owner: Owner,
-    state: CardState,
-    linkedInfo?: ICardInfo
-  ) {
-    this.currentInfo = info;
-    this.originalInfo = info;
-    this.location = location;
-    this.owner = owner;
-    this.state = state;
-    if (linkedInfo) this.linkedInfo = linkedInfo;
-  }
 }

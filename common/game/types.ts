@@ -7,13 +7,6 @@ export type PlayerInfo = {
   name: string;
 };
 
-// export type PlayerState = {};
-
-// export interface IPlayer {
-//   info: PlayerInfo;
-//   state: PlayerState;
-// }
-
 export interface IGameState {
   phase: Phase;
 }

@@ -19,37 +19,45 @@ export type ScenarioCardType =
 
 export type CardType = PlayerCardType | ScenarioCardType;
 
-export type DeckType = 'PLAYER' | 'SCENARIO';
+export type DeckType = 'Player' | 'Encounter';
 
 export type ProductSet = 'Core Set';
 
 // TODO: add more
-export type HeroName = 'Spider-Man' | 'Captain Marvel';
+export type HeroName =
+  | 'Spider-Man'
+  | 'Captain Marvel'
+  | 'Black Panther'
+  | 'She-Hulk'
+  | 'Iron Man';
 
 // need this for Spider-Man - Miles Morales
-export type HeroSet = 'Spider-Man' | 'Captain Marvel';
-
-export type DeckSet =
-  | 'Black Panther'
-  | 'Black Panther Nemesis'
-  | 'Bomb Scare'
+export type HeroSet =
+  | 'Spider-Man'
   | 'Captain Marvel'
-  | 'Captain Marvel Nemesis'
+  | 'Black Panther'
+  | 'She-Hulk'
+  | 'Iron Man';
+
+export type ModularSet =
+  | 'Bomb Scare'
   | 'Expert'
-  | 'Iron Man'
-  | 'Iron Man Nemesis'
-  | 'Klaw'
   | 'Legions of Hydra'
   | 'Masters of Evil'
-  | 'Rhino'
-  | 'She-Hulk'
-  | 'She-Hulk Nemesis'
-  | 'Spider-Man'
-  | 'Spider-Man Nemesis'
   | 'Standard'
   | 'The Doomsday Chair'
-  | 'Ultron'
   | 'Under Attack';
+
+export type NemesisSet =
+  | 'Black Panther Nemesis'
+  | 'Captain Marvel Nemesis'
+  | 'She-Hulk Nemesis'
+  | 'Spider-Man Nemesis'
+  | 'Iron Man Nemesis';
+
+export type VillainSet = 'Klaw' | 'Rhino' | 'Ultron';
+
+export type CardSet = HeroSet | ModularSet | NemesisSet | VillainSet;
 
 export type VillainName = 'Rhino' | 'Klaw' | 'Ultron';
 
