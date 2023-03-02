@@ -1,6 +1,5 @@
 export * from './card/types';
 export * from './card/constants';
-export * from './deck/types';
 export * from './game/constants';
 
 export { default as Card } from './card/Card';

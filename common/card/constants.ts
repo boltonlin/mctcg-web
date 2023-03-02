@@ -74,10 +74,11 @@ export type Classification =
   | 'Hero';
 
 export type CardState =
-  | 'IN_PLAY'
-  | 'IN_HAND'
-  | 'IN_DISCARD'
   | 'IN_DECK'
+  | 'IN_DISCARD'
+  | 'IN_HAND'
+  | 'IN_PILE'
+  | 'IN_PLAY'
   | 'REMOVED';
 
 export type CardStateTransition =

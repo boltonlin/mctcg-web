@@ -10,6 +10,7 @@ export type Traits = Set<string>;
 export type ResourceMap = Map<ResourceType, number>;
 export type Abilities = [number];
 export type CardCode = string;
+export type CardList = Map<CardCode, number>;
 
 export interface ICardInfo {
   _id?: string;
