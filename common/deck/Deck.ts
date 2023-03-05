@@ -12,6 +12,7 @@ export default class Deck extends Pile {
         temp.push(this.cards?.shift() as Card);
       }
     }
+    this.size -= num;
     target.unshift(...temp);
   }
 }
