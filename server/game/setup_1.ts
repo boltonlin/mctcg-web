@@ -19,6 +19,7 @@ import {
   PlayerAvatar,
   VillainAvatar,
   VillainName,
+  Zone,
 } from '../../common';
 import type {
   CardList,
@@ -32,7 +33,7 @@ import type {
   PileType,
   PlayerForm,
   VillainSet,
-  Zone,
+  ZoneName,
 } from '../../common';
 import PlayerDeckListModel from '../db/playerDeckListModel';
 import CardModel from '../db/cardModel';
@@ -61,7 +62,7 @@ const createCard = (
   cardInfo: ICardInfo,
   owner: Owner,
   state: CardState,
-  zone: Zone
+  zone: ZoneName
 ) => {
   return new Card(cardInfo, owner, state, zone);
 };
@@ -69,11 +70,11 @@ const createCard = (
 const createDeck = async (
   cardList: CardList,
   owner: Owner,
-  zone: Zone,
+  zone: ZoneName,
   dtype: DeckType,
   state: CardState
 ) => {
-  let deck: Deck = new Deck([], dtype, owner);
+  let deck: Deck = new Deck([], dtype, owner, zone);
   for await (const [code, qty] of cardList.entries()) {
     let cardInfo: ICardInfo;
     cardInfo = (await CardModel.findById(code, {
@@ -90,7 +91,7 @@ const createPile = async (
   cardList: CardList,
   owner: Owner,
   name: PileType,
-  zone: Zone,
+  zone: ZoneName,
   state: CardState
 ) => {
   let pile: Pile = new Pile([], owner, name, zone);
@@ -113,18 +114,25 @@ const createCardList = (tuples: Tuples) => {
   ) as CardList;
 };
 
-const combineDecks = (deckA: Deck, deckB: Deck, owner: Owner): Deck => {
+const combineDecks = (
+  deckA: Deck,
+  deckB: Deck,
+  owner: Owner,
+  zone: ZoneName
+): Deck => {
   if (deckA.type !== deckB.type) throw new Error('Decks are not the same type');
   return new Deck(
     deckA.cards.concat(deckB.cards),
     deckA.type as DeckType,
-    owner
+    owner,
+    zone
   );
 };
 
 const createPlayerDeck = (heroDeck: Deck, nonHeroDeck: Deck, owner: Owner) =>
-  combineDecks(heroDeck, nonHeroDeck, owner);
+  combineDecks(heroDeck, nonHeroDeck, owner, 'PlayerDeck');
 
+// TODO: this step needs to interpret side1A of the main scheme card
 const createEncounterDeck = async (
   villainSet: VillainSet,
   modSetNames: ModularSet[],
@@ -154,7 +162,8 @@ const createEncounterDeck = async (
         'Encounter',
         'IN_DECK'
       ),
-      'VILLAIN'
+      'VILLAIN',
+      'EncounterDeck'
     );
   }
   for await (const set of heroSets) {
@@ -172,7 +181,8 @@ const createEncounterDeck = async (
         'Encounter',
         'IN_DECK'
       ),
-      'VILLAIN'
+      'VILLAIN',
+      'EncounterDeck'
     );
   }
   return await encounterDeck;
@@ -191,7 +201,7 @@ const createMainSchemePile = async (villainSet: VillainSet) => {
     mainSchemeList,
     'VILLAIN',
     'Main Scheme',
-    'MainSchemeZone_Hidden',
+    'MainSchemePile',
     'IN_PILE'
   );
 };
@@ -201,7 +211,7 @@ const initializePlayer = async (heroList: CardList, playerForm: PlayerForm) => {
     heroList,
     playerForm.designation,
     'Identity',
-    'IdentityZone',
+    'IdentityPile',
     'IN_PILE'
   )) as Pile;
 
@@ -212,7 +222,7 @@ const initializePlayer = async (heroList: CardList, playerForm: PlayerForm) => {
     gameSetupConfig.firstPlayer === playerForm.designation ? true : false
   );
 
-  return { identityPile, playerAvatar };
+  return [identityPile, playerAvatar];
 };
 
 const initializeVillain = async (
@@ -234,7 +244,7 @@ const initializeVillain = async (
     ),
     'VILLAIN',
     'Villain',
-    'VillainZone',
+    'VillainPile',
     'IN_PILE'
   );
   const villainAvatar = new VillainAvatar(
@@ -243,12 +253,57 @@ const initializeVillain = async (
     difficulty === 'Normal' ? 1 : 2,
     difficulty === 'Normal' ? 2 : 3
   );
-  return { villainPile, villainAvatar };
+  return [villainPile, villainAvatar];
+};
+
+const initializeEmptyZones = (): Zone[] => [
+  new Zone('AttachmentZone', 'VILLAIN'),
+  new Zone('SideSchemeZone', 'VILLAIN'),
+  new Zone('MainSchemeZone', 'VILLAIN'),
+  new Zone('Removed', 'VILLAIN'),
+  new Zone('AllyZone', 'PLAYER1'),
+  new Zone('SupportZone', 'PLAYER1'),
+  new Zone('UpgradeZone', 'PLAYER1'),
+  new Zone('MinionZone', 'PLAYER1'),
+];
+
+// const initializeEmptyPiles = (): Pile[] => new Pile([], 'PLAYER1', );
+
+const initializeIdentityZone = async (
+  heroTitle: HeroSet,
+  identityPile: Pile
+) => {
+  const identityZone = new Zone('IdentityZone', 'PLAYER1');
+  const { title: alterEgoTitle } = (await CardModel.findOne(
+    {
+      ctype: 'Alter-Ego',
+      cardSet: heroTitle,
+    },
+    'title'
+  )) as { title: string };
+  identityZone.place(
+    identityPile.take(identityPile.findByTitle(alterEgoTitle))
+  );
+  return identityZone;
+};
+
+const initializeVillainZone = (difficulty: Difficulty, villainPile: Pile) => {
+  const villainZone = new Zone('VillainZone', 'VILLAIN');
+  villainZone.place(
+    villainPile.take(
+      villainPile.findByAttribute(
+        'stageNumber',
+        difficulty === 'Normal' ? 1 : 2
+      )
+    )
+  );
+  return villainZone;
 };
 
 async function main() {
-  const [{ heroList, heroCardList, nonHeroList, nemesisList }, _err] =
+  const [{ hero, heroList, heroCardList, nonHeroList, nemesisList }, _err] =
     await tryCatch(fetchPlayerDeckList, playerForm.deckId);
+
   const heroDeck = await createDeck(
     heroCardList,
     playerForm.designation,
@@ -256,6 +311,7 @@ async function main() {
     'Player',
     'IN_DECK'
   );
+
   const nonHeroDeck = await createDeck(
     nonHeroList,
     playerForm.designation,
@@ -263,35 +319,86 @@ async function main() {
     'Player',
     'IN_DECK'
   );
+
   const playerDeck = await createPlayerDeck(
     heroDeck,
     nonHeroDeck,
     playerForm.designation
   );
+
   const encounterDeck = await createEncounterDeck(
     gameSetupConfig.villainSet,
     gameSetupConfig.modularSets,
     gameSetupConfig.heroSets
   );
+
   const nemesisPile = await createNemesisPile(nemesisList);
+
   const mainSchemePile = await createMainSchemePile(gameSetupConfig.villainSet);
-  const { identityPile, playerAvatar } = await initializePlayer(
+
+  const [identityPile, playerAvatar] = (await initializePlayer(
     heroList,
     playerForm
-  );
-  const { villainPile, villainAvatar } = await initializeVillain(
+  )) as [Pile, PlayerAvatar];
+
+  const [villainPile, villainAvatar] = (await initializeVillain(
     gameSetupConfig.difficulty,
     gameSetupConfig.villainSet,
     gameSetupConfig.numPlayers
+  )) as [Pile, VillainAvatar];
+
+  const [
+    attachmentZone,
+    sideSchemeZone,
+    mainSchemePlayZone,
+    removedZone,
+    allyZone,
+    supportZone,
+    upgradeZone,
+    minionZone,
+  ] = initializeEmptyZones();
+
+  const encounterDiscardPile = new Pile(
+    [],
+    'VILLAIN',
+    'Encounter Discards',
+    'EncounterDiscardPile'
   );
+
+  const playerDiscardPile = new Pile(
+    [],
+    playerForm.designation,
+    'Player Discards',
+    'PlayerDiscardPile'
+  );
+
+  const identityZone = await initializeIdentityZone(hero, identityPile);
+
+  const villainZone = initializeVillainZone(
+    gameSetupConfig.difficulty,
+    villainPile
+  );
+
   console.log(playerDeck.prettyPrint());
   console.log(encounterDeck.prettyPrint());
   console.log(nemesisPile.prettyPrint());
   console.log(mainSchemePile.prettyPrint());
-  console.log(playerAvatar);
+  console.log(attachmentZone?.prettyPrint());
+  console.log(sideSchemeZone?.prettyPrint());
+  console.log(mainSchemePlayZone?.prettyPrint());
+  console.log(removedZone?.prettyPrint());
+  console.log(allyZone?.prettyPrint());
+  console.log(supportZone?.prettyPrint());
+  console.log(upgradeZone?.prettyPrint());
+  console.log(minionZone?.prettyPrint());
+  console.log(encounterDiscardPile.prettyPrint());
+  console.log(playerDiscardPile.prettyPrint());
   console.log(identityPile.prettyPrint());
-  console.log(villainAvatar);
+  console.log(identityZone.prettyPrint());
   console.log(villainPile.prettyPrint());
+  console.log(villainZone.prettyPrint());
+  console.log(playerAvatar);
+  console.log(villainAvatar);
 }
 
 main();

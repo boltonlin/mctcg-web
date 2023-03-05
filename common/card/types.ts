@@ -13,6 +13,7 @@ export type CardCode = string;
 export type CardList = Map<CardCode, number>;
 
 export interface ICardInfo {
+  [index: string]: string | number[] | number | boolean | undefined;
   _id?: string;
   abilities?: number[];
   accelerationFactor?: number;

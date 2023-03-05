@@ -1,5 +1,5 @@
 import type Card from '../card/Card';
-import type { Owner, Zone } from '../game/constants';
+import type { Owner, ZoneName } from '../game/constants';
 import type { DeckType } from '../index';
 import type { PileType } from './types';
 
@@ -8,13 +8,13 @@ export default class Pile {
   owner: Owner;
   size: number;
   type: PileType | DeckType;
-  zone: Zone;
+  zone: ZoneName;
 
   constructor(
     cards: Card[],
     owner: Owner,
     type: PileType | DeckType,
-    zone: Zone
+    zone: ZoneName
   ) {
     this.cards = cards;
     this.type = type;
@@ -35,9 +35,27 @@ export default class Pile {
     }
   }
 
+  findByAttribute(
+    keyQuery: string,
+    valueQuery: string | number | boolean
+  ): number {
+    for (let i = 0; i < this.cards.length; i += 1) {
+      if (this.cards[i]?.originalInfo?.[keyQuery] === valueQuery) return i;
+    }
+    return -1;
+  }
+
+  findByTitle(titleQuery: string): number {
+    for (let i = 0; i < this.cards.length; i += 1) {
+      if (this.cards[i]?.originalInfo?.title === titleQuery) return i;
+    }
+    return -1;
+  }
+
   prettyPrint(): string {
     let str = `Name: ${this.type} ${this.constructor.name}\n`;
     str += `Size: ${this.size}\n`;
+    str += `Zone: ${this.zone}\n`;
     str += `Owner: ${this.owner}\n`;
     return str + this.prettyPrintCards();
   }
@@ -53,5 +71,12 @@ export default class Pile {
     }
     str += ']\n';
     return str;
+  }
+
+  take(index: number): Card {
+    const result = this.cards[index] as Card;
+    this.cards.splice(index, 1);
+    this.size -= 1;
+    return result;
   }
 }
