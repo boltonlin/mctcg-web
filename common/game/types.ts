@@ -1,5 +1,12 @@
-import type { Difficulty, HeroSet, ModularSet, VillainSet } from '../index';
-import type { Phase, PlayerTitle } from './constants';
+import type {
+  Difficulty,
+  HeroSet,
+  ModularSet,
+  Pile,
+  VillainSet,
+  Zone,
+} from '../index';
+import type { Phase, PlayerTitle, ZoneName } from './constants';
 
 export type PlayerForm = {
   deckId: string;
@@ -19,3 +26,15 @@ export type GameSetupConfig = {
 export interface IGameState {
   phase: Phase;
 }
+
+export type ZoneMap =
+  | {
+      [key in ZoneName]: Zone;
+    }
+  | Record<string, never>;
+
+export type PileMap =
+  | {
+      [key in ZoneName]: Pile;
+    }
+  | Record<string, never>;

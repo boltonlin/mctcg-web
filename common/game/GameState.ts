@@ -1,16 +1,19 @@
-import type { Deck, GameSetupConfig } from '../index';
+import type { ObjectId } from 'bson';
+import type { Deck, GameSetupConfig, PileMap, ZoneMap } from '../index';
 import type Pile from './Pile';
 import type PlayerAvatar from './PlayerAvatar';
 import type VillainAvatar from './VillainAvatar';
 import type Zone from './Zone';
 
 export default interface GameState {
+  _id: ObjectId;
+
   hands: Pile[];
-  zones: Map<string, Zone>;
-  piles: Map<string, Pile>; // not MainSchemePile or VillainPile
+  zones: ZoneMap;
+  piles: PileMap; // not MainSchemePile or VillainPile
   removed: Zone;
 
-  playerDeck: Deck;
+  playerDecks: Deck[];
   encounterDeck: Deck;
 
   avatars: PlayerAvatar[];

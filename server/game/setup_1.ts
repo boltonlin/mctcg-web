@@ -14,6 +14,7 @@ import tryCatch from '../utils/tryCatch';
 import {
   Card,
   Deck,
+  GameState,
   Pile,
   PlayerAvatar,
   VillainAvatar,
@@ -34,24 +35,11 @@ import type {
   VillainSet,
   ZoneName,
 } from '../../common';
-import PlayerDeckListModel from '../db/playerDeckListModel';
-import CardModel from '../db/cardModel';
+import PlayerDeckListModel from '../models/playerDeckListModel';
+import CardModel from '../models/cardModel';
 import shuffle from '../utils/shuffle';
-
-// ! placeholders
-const playerForm: PlayerForm = {
-  deckId: '63ffec30ba725eaeca9b5b97',
-  designation: 'PLAYER1',
-  name: 'PROXYPLAYER',
-};
-const gameSetupConfig: GameSetupConfig = {
-  difficulty: 'Normal',
-  firstPlayer: 'PLAYER1',
-  heroSets: ['Spider-Man'],
-  modularSets: ['Standard', 'Bomb Scare'],
-  numPlayers: 1,
-  villainSet: 'Rhino',
-};
+import { ObjectId } from 'bson';
+import GameStateModel from '../models/gameStateModel';
 
 type Tuples = { _id: string; cardSetQty: number }[];
 
@@ -180,7 +168,11 @@ const createMainSchemePile = async (villainSet: VillainSet) => {
   return createPile(mainSchemeList, 'VILLAIN', 'MainSchemePile', 'IN_PILE');
 };
 
-const initializePlayer = async (heroList: CardList, playerForm: PlayerForm) => {
+const initializePlayer = async (
+  heroList: CardList,
+  playerForm: PlayerForm,
+  config: GameSetupConfig,
+) => {
   const identityPile = (await createPile(
     heroList,
     playerForm.designation,
@@ -192,7 +184,7 @@ const initializePlayer = async (heroList: CardList, playerForm: PlayerForm) => {
     playerForm.name,
     playerForm.designation,
     identityPile?.cards[0]?.originalInfo?.hitPoints as number,
-    gameSetupConfig.firstPlayer === playerForm.designation ? true : false,
+    config.firstPlayer === playerForm.designation ? true : false,
   );
 
   return [identityPile, playerAvatar];
@@ -239,8 +231,6 @@ const initializeEmptyZones = (): Zone[] => [
   new Zone('MinionZone', 'PLAYER1'),
 ];
 
-// const initializeEmptyPiles = (): Pile[] => new Pile([], 'PLAYER1', );
-
 const initializeIdentityZone = async (
   heroTitle: HeroSet,
   identityPile: Pile,
@@ -273,12 +263,12 @@ const initializeVillainZone = (difficulty: Difficulty, villainPile: Pile) => {
 };
 
 const createZoneMap = (...zones: Zone[]) =>
-  new Map(zones.map((zone) => [zone.name, zone]));
+  zones.reduce((acc, zone) => ({ ...acc, [zone.name]: zone }), {});
 
 const createPileMap = (...piles: Pile[]) =>
-  new Map(piles.map((pile) => [pile.zone, pile]));
+  piles.reduce((acc, pile) => ({ ...acc, [pile.zone]: pile }), {});
 
-async function main() {
+const setup_1 = async (playerForm: PlayerForm, config: GameSetupConfig) => {
   const [{ hero, heroList, heroCardList, nonHeroList, nemesisList }, _err] =
     await tryCatch(fetchPlayerDeckList, playerForm.deckId);
 
@@ -303,24 +293,25 @@ async function main() {
   );
 
   const encounterDeck = await createEncounterDeck(
-    gameSetupConfig.villainSet,
-    gameSetupConfig.modularSets,
-    gameSetupConfig.heroSets,
+    config.villainSet,
+    config.modularSets,
+    config.heroSets,
   );
 
   const nemesisPile = await createNemesisPile(nemesisList);
 
-  const mainSchemePile = await createMainSchemePile(gameSetupConfig.villainSet);
+  const mainSchemePile = await createMainSchemePile(config.villainSet);
 
   const [identityPile, playerAvatar] = (await initializePlayer(
     heroList,
     playerForm,
+    config,
   )) as [Pile, PlayerAvatar];
 
   const [villainPile, villainAvatar] = (await initializeVillain(
-    gameSetupConfig.difficulty,
-    gameSetupConfig.villainSet,
-    gameSetupConfig.numPlayers,
+    config.difficulty,
+    config.villainSet,
+    config.numPlayers,
   )) as [Pile, VillainAvatar];
 
   const [
@@ -344,10 +335,7 @@ async function main() {
 
   const identityZone = await initializeIdentityZone(hero, identityPile);
 
-  const villainZone = initializeVillainZone(
-    gameSetupConfig.difficulty,
-    villainPile,
-  );
+  const villainZone = initializeVillainZone(config.difficulty, villainPile);
 
   const playerHand = new Pile([], playerForm.designation, 'PlayerHand');
 
@@ -359,7 +347,11 @@ async function main() {
     identityZone.cards[0]?.originalInfo?.handSize as number,
   );
 
+  // ! placeholder
+  const gameId = new ObjectId('TESTTESTTEST');
+
   const playerPerspective: PlayerPerspective = {
+    _id: gameId,
     owner: playerForm.designation,
 
     hand: playerHand,
@@ -389,29 +381,44 @@ async function main() {
     villain: villainAvatar,
   };
 
-  console.log(playerPerspective);
+  const gameState: GameState = {
+    _id: gameId,
 
-  // console.log(playerDeck.prettyPrint());
-  // console.log(encounterDeck.prettyPrint());
-  // console.log(nemesisPile.prettyPrint());
-  // console.log(mainSchemePile.prettyPrint());
-  // console.log(attachmentZone?.prettyPrint());
-  // console.log(sideSchemeZone?.prettyPrint());
-  // console.log(mainSchemeZone?.prettyPrint());
-  // console.log(removedZone?.prettyPrint());
-  // console.log(allyZone?.prettyPrint());
-  // console.log(upgradeZone?.prettyPrint());
-  // console.log(supportZone?.prettyPrint());
-  // console.log(minionZone?.prettyPrint());
-  // console.log(encounterDiscardPile.prettyPrint());
-  // console.log(playerDiscardPile.prettyPrint());
-  // console.log(identityPile.prettyPrint());
-  // console.log(identityZone.prettyPrint());
-  // console.log(villainPile.prettyPrint());
-  // console.log(villainZone.prettyPrint());
-  // console.log(playerHand.prettyPrint());
-  // console.log(playerAvatar);
-  // console.log(villainAvatar);
-}
+    hands: [playerHand],
+    zones: createZoneMap(
+      attachmentZone as Zone,
+      mainSchemeZone as Zone,
+      sideSchemeZone as Zone,
+      villainZone as Zone,
+      allyZone as Zone,
+      upgradeZone as Zone,
+      supportZone as Zone,
+      minionZone as Zone,
+      identityZone as Zone,
+    ),
+    piles: createPileMap(
+      encounterDiscardPile as Pile,
+      playerDiscardPile as Pile,
+      nemesisPile as Pile,
+      identityPile as Pile,
+      mainSchemePile as Pile,
+    ),
+    removed: removedZone as Zone,
 
-main();
+    playerDecks: [playerDeck],
+    encounterDeck: encounterDeck,
+
+    avatars: [playerAvatar],
+    villain: villainAvatar,
+
+    config: config,
+  };
+
+  await GameStateModel.findOneAndUpdate({ _id: gameState._id }, gameState, {
+    upsert: true,
+  }).exec();
+
+  return playerPerspective;
+};
+
+export default setup_1;

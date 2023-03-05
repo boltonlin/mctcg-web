@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/boltonlin/mctcg-web/issues"
   },
-  "homepage": "https://github.com/boltonlin/mctcg-web#readme"
+  "homepage": "https://github.com/boltonlin/mctcg-web#readme",
+  "dependencies": {
+    "bson": "^5.0.1"
+  }
 }

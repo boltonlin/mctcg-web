@@ -1,15 +1,18 @@
+import type { ObjectId } from 'bson';
 import type { Owner } from './constants';
 import type Pile from './Pile';
 import type PlayerAvatar from './PlayerAvatar';
+import type { ZoneMap, PileMap } from './types';
 import type VillainAvatar from './VillainAvatar';
 import type Zone from './Zone';
 
 export default interface PlayerPerspective {
+  _id: ObjectId;
   owner: Owner;
 
   hand: Pile;
-  zones: Map<string, Zone>;
-  piles: Map<string, Pile>; // not MainSchemePile or VillainPile
+  zones: ZoneMap;
+  piles: PileMap; // not MainSchemePile or VillainPile
   removed: Zone;
 
   pDeckSize: number;

@@ -1,8 +1,8 @@
-import '..';
+import '.';
 import * as fs from 'fs/promises';
 import yaml from 'yaml';
-import CardModel from '../cardModel';
-import PlayerDeckListModel from '../playerDeckListModel';
+import CardModel from '../models/cardModel';
+import PlayerDeckListModel from '../models/playerDeckListModel';
 
 const intoMap = (acc: any, result: any) => ({
   ...acc,
@@ -12,32 +12,33 @@ const intoMap = (acc: any, result: any) => ({
 async function main() {
   const file = await fs.readFile(
     '../../config/spiderman_starterDeck.yml',
-    'utf8'
+    'utf8',
   );
   const deck = yaml.parse(file);
   const heroResults: any = await CardModel.findOne(
     { code: deck.heroCode },
-    'title cardSet productSet'
+    'title cardSet productSet',
   );
   const heroListResults: any = await CardModel.find(
     {
       cardSet: heroResults.cardSet,
     },
-    'title ctype cardSetQty'
+    'title ctype cardSetQty',
   );
   const nemesisListResults: any = await CardModel.find(
     {
       cardSet: `${heroResults.title} Nemesis`,
       productSet: heroResults.productSet,
     },
-    'title cardSetQty'
+    'title cardSetQty',
   );
   const heroList = heroListResults
     .filter((result: any) => result.ctype.match(/hero|alter-ego/i)?.length)
     .reduce(intoMap, {});
   const heroCardList = heroListResults
     .filter(
-      (result: any) => result.ctype.match(/hero|alter-ego|obligation/i) === null
+      (result: any) =>
+        result.ctype.match(/hero|alter-ego|obligation/i) === null,
     )
     .reduce(intoMap, {});
   const obligations = heroListResults

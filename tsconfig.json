@@ -4,6 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "strict": true,
     "strictNullChecks": true,
