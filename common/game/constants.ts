@@ -25,6 +25,7 @@ export type ZoneName =
   | 'IdentityZone'
   | 'IdentityPile'
   | 'PlayerDeck'
+  | 'PlayerHand'
   | 'NemesisPile'
   | 'PlayerDiscardPile'
   | 'AllyZone'

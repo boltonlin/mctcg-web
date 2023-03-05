@@ -1,23 +1,14 @@
 import type Card from '../card/Card';
-import type { Owner, ZoneName } from '../game/constants';
-import type { DeckType } from '../index';
-import type { PileType } from './types';
+import type { Owner, ZoneName } from './constants';
 
 export default class Pile {
   cards: Card[];
   owner: Owner;
   size: number;
-  type: PileType | DeckType;
   zone: ZoneName;
 
-  constructor(
-    cards: Card[],
-    owner: Owner,
-    type: PileType | DeckType,
-    zone: ZoneName
-  ) {
+  constructor(cards: Card[], owner: Owner, zone: ZoneName) {
     this.cards = cards;
-    this.type = type;
     this.size = cards.length;
     this.owner = owner;
     this.zone = zone;
@@ -37,7 +28,7 @@ export default class Pile {
 
   findByAttribute(
     keyQuery: string,
-    valueQuery: string | number | boolean
+    valueQuery: string | number | boolean,
   ): number {
     for (let i = 0; i < this.cards.length; i += 1) {
       if (this.cards[i]?.originalInfo?.[keyQuery] === valueQuery) return i;
@@ -53,9 +44,8 @@ export default class Pile {
   }
 
   prettyPrint(): string {
-    let str = `Name: ${this.type} ${this.constructor.name}\n`;
+    let str = `Zone: ${this.zone}\n`;
     str += `Size: ${this.size}\n`;
-    str += `Zone: ${this.zone}\n`;
     str += `Owner: ${this.owner}\n`;
     return str + this.prettyPrintCards();
   }

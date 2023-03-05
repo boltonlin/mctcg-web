@@ -19,8 +19,6 @@ export type ScenarioCardType =
 
 export type CardType = PlayerCardType | ScenarioCardType;
 
-export type DeckType = 'Player' | 'Encounter';
-
 export type ProductSet = 'Core Set';
 
 // TODO: add more
