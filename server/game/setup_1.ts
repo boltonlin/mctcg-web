@@ -14,22 +14,23 @@ import tryCatch from '../utils/tryCatch';
 import {
   Card,
   Deck,
-  Difficulty,
   Pile,
   PlayerAvatar,
   VillainAvatar,
-  VillainName,
   Zone,
 } from '../../common';
 import type {
   CardList,
   CardState,
+  Difficulty,
   GameSetupConfig,
   HeroSet,
   ICardInfo,
   ModularSet,
   Owner,
   PlayerForm,
+  PlayerPerspective,
+  VillainName,
   VillainSet,
   ZoneName,
 } from '../../common';
@@ -271,6 +272,12 @@ const initializeVillainZone = (difficulty: Difficulty, villainPile: Pile) => {
   return villainZone;
 };
 
+const createZoneMap = (...zones: Zone[]) =>
+  new Map(zones.map((zone) => [zone.name, zone]));
+
+const createPileMap = (...piles: Pile[]) =>
+  new Map(piles.map((pile) => [pile.zone, pile]));
+
 async function main() {
   const [{ hero, heroList, heroCardList, nonHeroList, nemesisList }, _err] =
     await tryCatch(fetchPlayerDeckList, playerForm.deckId);
@@ -344,17 +351,45 @@ async function main() {
 
   const playerHand = new Pile([], playerForm.designation, 'PlayerHand');
 
-  // shuffle both decks
   shuffle(playerDeck);
   shuffle(encounterDeck);
 
-  // draw initial hand to player
   playerDeck.deal(
     playerHand,
     identityZone.cards[0]?.originalInfo?.handSize as number,
   );
 
-  // send game state to client
+  const playerPerspective: PlayerPerspective = {
+    owner: playerForm.designation,
+
+    hand: playerHand,
+    zones: createZoneMap(
+      attachmentZone as Zone,
+      mainSchemeZone as Zone,
+      sideSchemeZone as Zone,
+      villainZone as Zone,
+      allyZone as Zone,
+      upgradeZone as Zone,
+      supportZone as Zone,
+      minionZone as Zone,
+      identityZone as Zone,
+    ),
+    piles: createPileMap(
+      encounterDiscardPile as Pile,
+      playerDiscardPile as Pile,
+      nemesisPile as Pile,
+      identityPile as Pile,
+    ),
+    removed: removedZone as Zone,
+
+    pDeckSize: playerDeck.size,
+    eDeckSize: encounterDeck.size,
+
+    avatar: playerAvatar,
+    villain: villainAvatar,
+  };
+
+  console.log(playerPerspective);
 
   // console.log(playerDeck.prettyPrint());
   // console.log(encounterDeck.prettyPrint());

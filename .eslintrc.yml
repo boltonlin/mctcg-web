@@ -16,17 +16,5 @@ ignorePatterns:
   - dist/
 root: true
 rules:
-  '@typescript-eslint/member-ordering':
-    - 'error'
-    - 'default':
-        memberTypes:
-          - 'signature'
-          - 'field'
-          - 'constructor'
-          - 'get'
-          - 'set'
-          - 'abstract-method'
-          - 'method'
-        order: 'natural'
   'lines-between-class-members': 'off'
   '@typescript-eslint/lines-between-class-members': 'off'
