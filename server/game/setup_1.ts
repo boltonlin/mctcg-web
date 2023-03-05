@@ -35,6 +35,7 @@ import type {
 } from '../../common';
 import PlayerDeckListModel from '../db/playerDeckListModel';
 import CardModel from '../db/cardModel';
+import shuffle from '../utils/shuffle';
 
 // ! placeholders
 const playerForm: PlayerForm = {
@@ -343,27 +344,39 @@ async function main() {
 
   const playerHand = new Pile([], playerForm.designation, 'PlayerHand');
 
-  console.log(playerDeck.prettyPrint());
-  console.log(encounterDeck.prettyPrint());
-  console.log(nemesisPile.prettyPrint());
-  console.log(mainSchemePile.prettyPrint());
-  console.log(attachmentZone?.prettyPrint());
-  console.log(sideSchemeZone?.prettyPrint());
-  console.log(mainSchemeZone?.prettyPrint());
-  console.log(removedZone?.prettyPrint());
-  console.log(allyZone?.prettyPrint());
-  console.log(upgradeZone?.prettyPrint());
-  console.log(supportZone?.prettyPrint());
-  console.log(minionZone?.prettyPrint());
-  console.log(encounterDiscardPile.prettyPrint());
-  console.log(playerDiscardPile.prettyPrint());
-  console.log(identityPile.prettyPrint());
-  console.log(identityZone.prettyPrint());
-  console.log(villainPile.prettyPrint());
-  console.log(villainZone.prettyPrint());
-  console.log(playerHand.prettyPrint());
-  console.log(playerAvatar);
-  console.log(villainAvatar);
+  // shuffle both decks
+  shuffle(playerDeck);
+  shuffle(encounterDeck);
+
+  // draw initial hand to player
+  playerDeck.deal(
+    playerHand,
+    identityZone.cards[0]?.originalInfo?.handSize as number,
+  );
+
+  // send game state to client
+
+  // console.log(playerDeck.prettyPrint());
+  // console.log(encounterDeck.prettyPrint());
+  // console.log(nemesisPile.prettyPrint());
+  // console.log(mainSchemePile.prettyPrint());
+  // console.log(attachmentZone?.prettyPrint());
+  // console.log(sideSchemeZone?.prettyPrint());
+  // console.log(mainSchemeZone?.prettyPrint());
+  // console.log(removedZone?.prettyPrint());
+  // console.log(allyZone?.prettyPrint());
+  // console.log(upgradeZone?.prettyPrint());
+  // console.log(supportZone?.prettyPrint());
+  // console.log(minionZone?.prettyPrint());
+  // console.log(encounterDiscardPile.prettyPrint());
+  // console.log(playerDiscardPile.prettyPrint());
+  // console.log(identityPile.prettyPrint());
+  // console.log(identityZone.prettyPrint());
+  // console.log(villainPile.prettyPrint());
+  // console.log(villainZone.prettyPrint());
+  // console.log(playerHand.prettyPrint());
+  // console.log(playerAvatar);
+  // console.log(villainAvatar);
 }
 
 main();

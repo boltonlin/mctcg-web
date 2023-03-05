@@ -1,24 +1,22 @@
 import type { Card, Owner, ZoneName } from '../index';
 
-type ZonePosition = number;
-
 // not a pile since cards will be laid out as a map
 export default class Zone {
-  cards: Map<ZonePosition, Card>;
+  cards: Card[];
   name: ZoneName;
-  numCards: number;
   owner: Owner;
+  size: number;
 
   constructor(name: ZoneName, owner: Owner) {
     this.name = name;
     this.owner = owner;
-    this.cards = new Map<ZonePosition, Card>();
-    this.numCards = 0;
+    this.cards = [];
+    this.size = 0;
   }
 
   place(card: Card): void {
-    this.cards.set(this.numCards, card);
-    this.numCards += 1;
+    this.cards.push(card);
+    this.size += 1;
   }
 
   prettyPrint(): string {
@@ -28,7 +26,7 @@ export default class Zone {
   }
 
   prettyPrintCards(): string {
-    let str = '<\n';
+    let str = '[\n';
     this.cards.forEach((card, pos) => {
       str += `  ${pos}: `;
       str += `${card?.originalInfo?.title}` ?? '';
@@ -36,7 +34,7 @@ export default class Zone {
         str += ` ${card?.originalInfo?.stageNumber}` ?? '';
       str += '\n';
     });
-    str += '>\n';
+    str += ']\n';
     return str;
   }
 }

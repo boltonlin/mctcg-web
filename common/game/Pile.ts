@@ -69,4 +69,10 @@ export default class Pile {
     this.size -= 1;
     return result;
   }
+
+  unshift(...args: Card[]): number {
+    this.cards.unshift(...args);
+    this.size += args.length;
+    return this.size;
+  }
 }
