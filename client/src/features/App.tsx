@@ -3,7 +3,7 @@ import Setup from './Setup';
 import { Card, Phase, PlayerPerspective } from '../../../common';
 import GameLog from './GameLog';
 import Game from './Game';
-import FocusCard from './FocusCard';
+import Control from './Game/Control';
 import pback from '../assets/pback.png';
 
 const { io } = require('socket.io-client');
@@ -27,7 +27,10 @@ export default function App() {
       case 'GAME_PHASE':
         return (
           <>
-            <FocusCard card={focusCard} />
+            <Control
+              card={focusCard}
+              commands={['Fight', 'Magic', 'Item', 'Run']}
+            />
             <Game
               io={socket}
               perspective={perspective}
@@ -43,5 +46,9 @@ export default function App() {
     console.log(perspective);
   }, [perspective]);
 
-  return <div className="flex w-[99vw] justify-between">{renderPhase()}</div>;
+  return (
+    <div className="flex w-[99vw] h-[98vh] justify-between">
+      {renderPhase()}
+    </div>
+  );
 }

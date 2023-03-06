@@ -9,13 +9,12 @@ type Props = {
 
 export default function Hand({ hand, setFocusCard }: Props) {
   return (
-    <div>
+    <div className="flex justify-center h-60 overflow-clip">
       {hand.map((card, index) => {
         return (
           <CardView
             key={`${index}_${card.zone}${card.originalInfo.code}`}
             card={card}
-            w={300}
             setFocusCard={setFocusCard}
           />
         );
