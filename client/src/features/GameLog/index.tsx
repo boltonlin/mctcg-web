@@ -19,8 +19,10 @@ export default function GameLog({ socket }: Props) {
   });
 
   return (
-    <div>
-      <textarea className="" value={messageLog} readOnly></textarea>
-    </div>
+    <textarea
+      className="h-[98vh] w-80 overflow-auto"
+      value={messageLog}
+      readOnly
+    />
   );
 }

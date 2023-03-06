@@ -3,6 +3,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const tailwindcss = require('tailwindcss');
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -26,11 +27,12 @@ const config = {
       template: 'public/index.html',
       favicon: 'public/favicon.ico',
     }),
+    tailwindcss,
   ],
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(d\.)?tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
       },
@@ -46,13 +48,21 @@ const config = {
         use: [stylesHandler, 'css-loader'],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: 'asset',
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/',
+            },
+          },
+        ],
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.d.ts'],
   },
 };
 

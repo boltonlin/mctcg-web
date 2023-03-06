@@ -1,8 +1,10 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import Setup from './Setup';
-import { Phase, PlayerPerspective } from '../../../common';
+import { Card, Phase, PlayerPerspective } from '../../../common';
 import GameLog from './GameLog';
 import Game from './Game';
+import FocusCard from './FocusCard';
+import pback from '../assets/pback.png';
 
 const { io } = require('socket.io-client');
 const socket = io();
@@ -10,6 +12,7 @@ const socket = io();
 export default function App() {
   const [phase, setPhase] = useState<Phase>('SETUP_PHASE');
   const [perspective, setPerspective] = useState({} as PlayerPerspective);
+  const [focusCard, setFocusCard] = useState({} as Card);
 
   const renderPhase = (): ReactElement => {
     switch (phase) {
@@ -24,7 +27,12 @@ export default function App() {
       case 'GAME_PHASE':
         return (
           <>
-            <Game io={socket} perspective={perspective} />
+            <FocusCard card={focusCard} />
+            <Game
+              io={socket}
+              perspective={perspective}
+              setFocusCard={setFocusCard}
+            />
             <GameLog socket={socket} />
           </>
         );
@@ -35,5 +43,5 @@ export default function App() {
     console.log(perspective);
   }, [perspective]);
 
-  return <div className="flex">{renderPhase()}</div>;
+  return <div className="flex w-[99vw] justify-between">{renderPhase()}</div>;
 }

@@ -4,9 +4,10 @@ import CardView from './CardView';
 
 type Props = {
   hand: Card[];
+  setFocusCard: React.Dispatch<React.SetStateAction<Card>>;
 };
 
-export default function Hand({ hand }: Props) {
+export default function Hand({ hand, setFocusCard }: Props) {
   return (
     <div>
       {hand.map((card, index) => {
@@ -15,6 +16,7 @@ export default function Hand({ hand }: Props) {
             key={`${index}_${card.zone}${card.originalInfo.code}`}
             card={card}
             w={300}
+            setFocusCard={setFocusCard}
           />
         );
       })}
