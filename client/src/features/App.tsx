@@ -22,7 +22,12 @@ export default function App() {
           />
         );
       case 'GAME_PHASE':
-        return <Game io={socket} perspective={perspective} />;
+        return (
+          <>
+            <Game io={socket} perspective={perspective} />
+            <GameLog socket={socket} />
+          </>
+        );
     }
   };
 
@@ -30,10 +35,5 @@ export default function App() {
     console.log(perspective);
   }, [perspective]);
 
-  return (
-    <div className="flex">
-      {renderPhase()}
-      <GameLog socket={socket} />
-    </div>
-  );
+  return <div className="flex">{renderPhase()}</div>;
 }

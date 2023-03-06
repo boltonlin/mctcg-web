@@ -20,7 +20,7 @@ export default function GameLog({ socket }: Props) {
 
   return (
     <div>
-      <textarea cols={50} rows={10} value={messageLog} readOnly></textarea>
+      <textarea className="" value={messageLog} readOnly></textarea>
     </div>
   );
 }
