@@ -414,11 +414,11 @@ const setup_1 = async (playerForm: PlayerForm, config: GameSetupConfig) => {
     config: config,
   };
 
-  await GameStateModel.findOneAndUpdate({ _id: gameState._id }, gameState, {
-    upsert: true,
-  }).exec();
+  // await GameStateModel.findOneAndUpdate({ _id: gameState._id }, gameState, {
+  //   upsert: true,
+  // }).exec();
 
-  return playerPerspective;
+  return [playerPerspective, gameState];
 };
 
 export default setup_1;

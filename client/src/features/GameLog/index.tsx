@@ -11,11 +11,11 @@ export default function GameLog({ socket }: Props) {
   socket.on('hello', (id: string) => {
     setMessageLog(`You are connected with id: ${id}`);
   });
-  socket.on('print-log', (log: string) => {
+  socket.on('log', (log: string) => {
     setMessageLog(messageLog.concat(`\n${log}`));
   });
   socket.on('update-perspective', (obj: any) => {
-    setMessageLog(messageLog.concat(`\n${JSON.stringify(obj, null, 2)}`));
+    setMessageLog(messageLog.concat(`\nLoaded perspective.`));
   });
 
   return (

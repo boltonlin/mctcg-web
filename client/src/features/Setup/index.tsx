@@ -1,11 +1,12 @@
 import React, { FormEvent, MouseEvent, ReactElement, useState } from 'react';
+import { PlayerPerspective } from '../../../../common/index';
 const { Socket } = require('socket.io-client');
 
 type FormName = 'initial' | 'selectSet' | 'resolveMulligan';
 
 type Props = {
   socket: typeof Socket;
-  setPerspective: React.Dispatch<React.SetStateAction<{}>>;
+  setPerspective: React.Dispatch<React.SetStateAction<PlayerPerspective>>;
   movePhase: () => void;
 };
 
@@ -27,6 +28,10 @@ export default function Setup({ socket, setPerspective, movePhase }: Props) {
     socket.emit('start-game');
     movePhase();
   };
+
+  socket.on('update-perspective', (perspective: PlayerPerspective) => {
+    setPerspective(perspective);
+  });
 
   return (
     <div>

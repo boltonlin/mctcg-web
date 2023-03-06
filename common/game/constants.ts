@@ -1,4 +1,4 @@
-export type Phase = 'SETUP_PHASE' | 'PLAYER_PHASE' | 'VILLAIN_PHASE';
+export type Phase = 'SETUP_PHASE' | 'GAME_PHASE';
 
 /**
  * piles are containers for cards in an order,
