@@ -9,8 +9,8 @@ export { default as Pile } from './game/Pile';
 export { default as Zone } from './game/Zone';
 export { default as PlayerAvatar } from './game/PlayerAvatar';
 export { default as VillainAvatar } from './game/VillainAvatar';
-export { default as PlayerPerspective } from './game/PlayerPerspective';
-export { default as GameState } from './game/GameState';
+export type { default as PlayerPerspective } from './game/PlayerPerspective';
+export type { default as GameState } from './game/GameState';
 
 export type DeckId = number;
 export type Difficulty = 'Normal' | 'Expert';
