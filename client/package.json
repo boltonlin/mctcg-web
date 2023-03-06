@@ -5,7 +5,7 @@
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --mode=development",
     "serve": "webpack serve"
   },
   "author": "Bolton Lin",
@@ -33,7 +33,6 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "@inlet/react-pixi": "^6.8.0",
     "@reduxjs/toolkit": "^1.9.3",
     "@types/socket.io-client": "^3.0.0",
     "axios": "^1.2.4",

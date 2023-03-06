@@ -3,7 +3,6 @@ import Setup from './Setup';
 import { Phase, PlayerPerspective } from '../../../common';
 import GameLog from './GameLog';
 import Game from './Game';
-// import { Stage } from '@inlet/react-pixi';
 
 const { io } = require('socket.io-client');
 const socket = io();

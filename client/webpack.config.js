@@ -20,6 +20,7 @@ const config = {
     open: true,
     host: 'localhost',
   },
+  devtool: 'cheap-module-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
