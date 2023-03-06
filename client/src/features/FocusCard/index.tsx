@@ -24,12 +24,12 @@ export default function FocusCard({ card }: Props) {
     setInfo(renderHtml());
   }, [card]);
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col justify-center">
       {card?.originalInfo?.imagesrc && (
         <img src={`https://marvelcdb.com${card.originalInfo.imagesrc}`} />
       )}
       <div
-        className="w-[300px] h-full"
+        className="w-[300px]"
         dangerouslySetInnerHTML={{
           __html: info,
         }}

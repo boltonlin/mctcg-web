@@ -13,13 +13,17 @@ export default function Game({ io, perspective, setFocusCard }: Props) {
   const [ready, setReady] = useState(false);
   const render = (): ReactElement | null => {
     if (!ready) return null;
-    return <Hand hand={perspective.hand.cards} setFocusCard={setFocusCard} />;
+    return (
+      <div className="flex flex-col">
+        {/* <PlayerZones /> */}
+        <Hand hand={perspective.hand.cards} setFocusCard={setFocusCard} />
+      </div>
+    );
   };
   useEffect(() => {
-    console.log(perspective);
     if (Object.keys(perspective).length) {
       setReady(true);
     }
   }, [perspective]);
-  return <div>{render()}</div>;
+  return render();
 }
