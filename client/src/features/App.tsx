@@ -31,9 +31,9 @@ export default function App() {
   }, [perspective]);
 
   return (
-    <div>
-      <GameLog socket={socket} />
+    <div className="flex">
       {renderPhase()}
+      <GameLog socket={socket} />
     </div>
   );
 }
