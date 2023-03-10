@@ -5,8 +5,9 @@
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "npx tailwindcss -i ./public/index.css -o ./dist/index.css --watch && webpack --watch --mode=development",
-    "serve": "webpack serve"
+    "watch": "webpack --watch --mode=development",
+    "serve": "webpack serve",
+    "tw-watch": "npx tailwindcss -i ./public/index.css -o ./dist/index.css --watch"
   },
   "author": "Bolton Lin",
   "license": "MIT",

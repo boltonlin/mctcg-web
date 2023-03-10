@@ -5,6 +5,7 @@ import GameLog from './GameLog';
 import Game from './Game';
 import Control from './Game/Control';
 import pback from '../assets/pback.png';
+import bg from '../assets/bg.jpg';
 
 const { io } = require('socket.io-client');
 const socket = io();
@@ -26,29 +27,34 @@ export default function App() {
         );
       case 'GAME_PHASE':
         return (
-          <>
-            <Control
-              card={focusCard}
-              commands={['Fight', 'Magic', 'Item', 'Run']}
+          <div className="relative w-full h-screen">
+            <img
+              className="absolute top-0 left-0 object-cover w-full h-full filter brightness-90 grayscale-50"
+              src={bg}
+              alt="background"
             />
-            <Game
-              io={socket}
-              perspective={perspective}
-              setFocusCard={setFocusCard}
-            />
-            <GameLog socket={socket} />
-          </>
+            <div className="absolute top-0 left-0 w-full h-full bg-gray-800 opacity-95"></div>
+            <div className="absolute inset-0 flex p-2">
+              <Control
+                card={focusCard}
+                commands={['Fight', 'Magic', 'Item', 'Run']}
+              />
+              <Game
+                io={socket}
+                perspective={perspective}
+                setFocusCard={setFocusCard}
+              />
+              <GameLog socket={socket} />
+            </div>
+          </div>
         );
     }
   };
 
   useEffect(() => {
+    console.log(bg);
     console.log(perspective);
   }, [perspective]);
 
-  return (
-    <div className="flex w-[99vw] h-[98vh] justify-between">
-      {renderPhase()}
-    </div>
-  );
+  return renderPhase();
 }

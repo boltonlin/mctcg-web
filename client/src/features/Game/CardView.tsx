@@ -9,9 +9,9 @@ type Props = {
 export default function CardView({ card, setFocusCard }: Props) {
   return (
     <img
-      className="w-[10rem] p-1 h-max"
+      className="w-[10rem] h-max rounded-xl m-[2px]"
       onMouseEnter={() => setFocusCard(card)}
       src={`https://marvelcdb.com${card.originalInfo.imagesrc}`}
-    ></img>
+    />
   );
 }
